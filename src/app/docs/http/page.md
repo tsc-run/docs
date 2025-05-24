@@ -7,7 +7,7 @@ Complete API reference for the tsc.run HTTP module used in route handlers. {% .l
 ## Import
 
 ```typescript
-import {http} from '@tsc-run/framework';
+import {http} from '@tsc-run/core';
 ```
 
 ## Request object
@@ -170,7 +170,7 @@ type ValidationResult<T> =
 ### Simple GET endpoint
 
 ```typescript
-import {http} from '@tsc-run/framework';
+import {http} from '@tsc-run/core';
 
 export async function GET(request: http.Request) {
     return http.response(http.STATUS_OK).json({
@@ -183,7 +183,7 @@ export async function GET(request: http.Request) {
 ### POST with validation
 
 ```typescript
-import {http} from '@tsc-run/framework';
+import {http} from '@tsc-run/core';
 import {z} from 'zod';
 
 const createUserSchema = z.object({

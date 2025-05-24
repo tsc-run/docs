@@ -33,7 +33,7 @@ Create a simple API endpoint by exporting HTTP method functions:
 ```typescript
 // fucntions/api/users/index.ts
 
-import { http } from '@tsc-run/framework';
+import { http } from '@tsc-run/core';
 
 export async function GET(request: http.Request) {
   return http.response(http.STATUS_OK).json({ 

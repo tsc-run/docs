@@ -7,7 +7,7 @@ API reference for the tsc.run events module used for dispatching and handling ev
 ## Import
 
 ```typescript
-import { events } from '@tsc-run/framework';
+import { events } from '@tsc-run/core';
 ```
 
 ## Emitting events
@@ -17,7 +17,7 @@ import { events } from '@tsc-run/framework';
 Emits an event to be processed by configured subscribers:
 
 ```typescript
-import { events } from '@tsc-run/framework';
+import { events } from '@tsc-run/core';
 
 export async function POST(request: http.Request) {
   const userData = request.json();

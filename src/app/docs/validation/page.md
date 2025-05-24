@@ -13,7 +13,7 @@ Request validation ensures your API endpoints receive correctly formatted data a
 Use `http.validate()` to validate request data against a Zod schema:
 
 ```typescript
-import { http } from '@tsc-run/framework';
+import { http } from '@tsc-run/core';
 import { z } from 'zod';
 
 const userSchema = z.object({
@@ -226,7 +226,7 @@ const schema = z.object({
 ### User registration
 
 ```typescript
-import { http, events } from '@tsc-run/framework';
+import { http, events } from '@tsc-run/core';
 import { z } from 'zod';
 import { v7 as uuidv7 } from 'uuid';
 
@@ -392,7 +392,7 @@ if (!result.success) {
 Validate event data in subscribers:
 
 ```typescript
-import { events } from '@tsc-run/framework';
+import { events } from '@tsc-run/core';
 import { z } from 'zod';
 
 const userRegisteredSchema = z.object({

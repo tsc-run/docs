@@ -27,7 +27,7 @@ export type UserRegisteredEvent = {
 Dispatch events from your API handlers using the `events.emit()` function:
 
 ```typescript
-import { http, events } from '@tsc-run/framework';
+import { http, events } from '@tsc-run/core';
 import type { UserRegisteredEvent } from '../events/user-registered.js';
 
 export async function POST(request: http.Request) {

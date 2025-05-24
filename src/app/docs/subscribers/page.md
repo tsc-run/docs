@@ -14,7 +14,7 @@ Create a subscriber by exporting a `listen` function from a file in your `functi
 
 ```typescript
 // functions/subscribers/send-welcome-email.ts
-import { events } from '@tsc-run/framework';
+import { events } from '@tsc-run/core';
 import type { UserRegisteredEvent } from '../../events/user-registered.js';
 
 export async function listen(event: events.Event<UserRegisteredEvent>) {
@@ -85,7 +85,7 @@ Handle multiple event types in a single subscriber:
 
 ```typescript
 // functions/subscribers/user-analytics.ts
-import {events} from '@tsc-run/framework';
+import {events} from '@tsc-run/core';
 import type {UserRegisteredEvent} from '../../events/user-registered.js';
 import type {UserVerifiedEvent} from '../../events/user-verified.js';
 
