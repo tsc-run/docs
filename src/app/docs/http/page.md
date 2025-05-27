@@ -16,12 +16,18 @@ The `Request` object provides access to incoming HTTP request data.
 
 ### Properties
 
-| Property  | Type                     | Description                       |
-|-----------|--------------------------|-----------------------------------|
-| `path`    | `string`                 | Request path (e.g., `/users/123`) |
-| `method`  | `string`                 | HTTP method (e.g., `GET`, `POST`) |
-| `headers` | `Record<string, string>` | Request headers                   |
-| `body`    | `string \| undefined`    | Raw request body                  |
+| Property    | Type                     | Description                            |
+|-------------|--------------------------|----------------------------------------|
+| `method`    | `string`                 | HTTP method (e.g., `GET`, `POST`)      |
+| `url`       | `string`                 | Full request URL                       |
+| `path`      | `string`                 | Request path (e.g., `/users/123`)     |
+| `query`     | `Record<string, string>` | URL query parameters                   |
+| `params`    | `Record<string, string>` | Route parameters                       |
+| `headers`   | `Record<string, string>` | Request headers                        |
+| `cookies`   | `Record<string, string>` | Request cookies                        |
+| `ip`        | `string`                 | Client IP address                      |
+| `userAgent` | `string`                 | Client User-Agent header               |
+| `body`      | `string \| undefined`    | Raw request body                       |
 
 ### Methods
 
@@ -31,30 +37,71 @@ Parses the request body as JSON:
 
 ```typescript
 export async function POST(request: http.Request) {
-    const data = request.json();
+    const data = await request.json();
     // data is Record<string, unknown>
 }
 ```
 
-**Returns**: `Record<string, unknown>`
+**Returns**: `Promise<Record<string, unknown>>`
 
-## Response creation
+**Throws**: Error if no body or invalid JSON
 
-### http.response(statusCode)
+#### text()
 
-Creates a new response with the specified status code:
+Returns the request body as a string:
 
 ```typescript
-const response = http.response(http.STATUS_CREATED);
+export async function POST(request: http.Request) {
+    const text = await request.text();
+    // text is string
+}
 ```
 
-**Parameters**:
+**Returns**: `Promise<string>`
 
-- `statusCode` (number): HTTP status code
+#### formData()
 
-**Returns**: `Response`
+Parses the request body as form data:
 
-### json(data)
+```typescript
+export async function POST(request: http.Request) {
+    const formData = await request.formData();
+    // formData is Record<string, string | string[]>
+}
+```
+
+**Returns**: `Promise<Record<string, string | string[]>>`
+
+#### buffer()
+
+Returns the request body as a Buffer:
+
+```typescript
+export async function POST(request: http.Request) {
+    const buffer = await request.buffer();
+    // buffer is Buffer
+}
+```
+
+**Returns**: `Promise<Buffer>`
+
+## Response object
+
+The `Response` object represents an HTTP response with chainable methods for setting content and headers.
+
+### Properties
+
+| Property     | Type                     | Description                    |
+|--------------|--------------------------|--------------------------------|
+| `statusCode` | `number`                 | HTTP status code               |
+| `headers`    | `Record<string, string>` | Response headers               |
+| `body`       | `string`                 | Response body content          |
+
+### Methods
+
+All response methods are chainable and return a new `Response` object.
+
+#### json(data)
 
 Sets the response body as JSON:
 
@@ -66,12 +113,87 @@ return http.response(200).json({
 ```
 
 **Parameters**:
-
 - `data` (string | Record<string, unknown>): Data to serialize as JSON
 
 **Returns**: `Response`
 
-### header(name, value)
+#### html(content)
+
+Sets the response body as HTML:
+
+```typescript
+return http.response(200).html('<h1>Hello World</h1>');
+```
+
+**Parameters**:
+- `content` (string): HTML content
+
+**Returns**: `Response`
+
+#### redirect(url, status?)
+
+Creates a redirect response:
+
+```typescript
+return http.response().redirect('/login', 302);
+```
+
+**Parameters**:
+- `url` (string): Redirect URL
+- `status` (number, optional): Redirect status code (defaults to 302)
+
+**Returns**: `Response`
+
+#### cookie(name, value, options?)
+
+Sets a response cookie:
+
+```typescript
+return http.response(200)
+    .cookie('sessionId', 'abc123', {
+        httpOnly: true,
+        secure: true,
+        maxAge: 3600000
+    })
+    .json({message: 'Logged in'});
+```
+
+**Parameters**:
+- `name` (string): Cookie name
+- `value` (string): Cookie value  
+- `options` (CookieOptions, optional): Cookie configuration
+
+**Returns**: `Response`
+
+#### attachment(filename?)
+
+Sets response headers for file download:
+
+```typescript
+return http.response(200)
+    .attachment('data.csv')
+    .header('Content-Type', 'text/csv');
+```
+
+**Parameters**:
+- `filename` (string, optional): Suggested filename for download
+
+**Returns**: `Response`
+
+#### status(code)
+
+Sets the response status code:
+
+```typescript
+return http.response().status(201).json({created: true});
+```
+
+**Parameters**:
+- `code` (number): HTTP status code
+
+**Returns**: `Response`
+
+#### header(name, value)
 
 Sets a response header:
 
@@ -82,11 +204,43 @@ return http.response(200)
 ```
 
 **Parameters**:
-
 - `name` (string): Header name
 - `value` (string): Header value
 
-**Returns**: `ResponseBuilder` (chainable)
+**Returns**: `Response`
+
+## Response creation
+
+### http.response(statusCode?)
+
+Creates a new response with the specified status code:
+
+```typescript
+const response = http.response(http.STATUS_CREATED);
+// or
+const response = http.response(); // defaults to 200
+```
+
+**Parameters**:
+- `statusCode` (number, optional): HTTP status code (defaults to 200)
+
+**Returns**: `Response`
+
+## Cookie options
+
+When setting cookies, you can provide additional options:
+
+```typescript
+type CookieOptions = {
+  maxAge?: number;        // Cookie lifetime in milliseconds
+  expires?: Date;         // Expiration date
+  domain?: string;        // Cookie domain
+  path?: string;          // Cookie path
+  secure?: boolean;       // HTTPS only
+  httpOnly?: boolean;     // HTTP only (not accessible via JavaScript)
+  sameSite?: 'strict' | 'lax' | 'none'; // SameSite policy
+};
+```
 
 ## Status codes
 
@@ -118,7 +272,6 @@ http.STATUS_UNPROCESSABLE_ENTITY // 422
 ```typescript
 http.STATUS_INTERNAL_SERVER_ERROR // 500
 http.STATUS_NOT_IMPLEMENTED       // 501
-http.STATUS_BAD_GATEWAY           // 502
 http.STATUS_SERVICE_UNAVAILABLE   // 503
 ```
 
