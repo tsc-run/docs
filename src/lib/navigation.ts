@@ -25,7 +25,8 @@ export const navigation = [
   {
     title: 'Framework API',
     links: [
-      { title: 'http module', href: '/docs/http' },
+      { title: 'Request', href: '/docs/http-request' },
+      { title: 'Response', href: '/docs/http-response' },
       { title: 'events module', href: '/docs/events-api' },
     ],
   },
