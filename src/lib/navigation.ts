@@ -3,6 +3,7 @@ export const navigation = [
     title: 'Introduction',
     links: [
       { title: 'What is tsc.run?', href: '/' },
+      { title: 'Quickstart', href: '/docs/quickstart' },
     ],
   },
   {

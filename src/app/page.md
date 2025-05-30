@@ -2,6 +2,18 @@
 title: What is tsc.run?
 ---
 
+{% quick-links %}
+
+{% quick-link title="Quick Start" icon="installation" href="/docs/quickstart" description="Get up and running quickly with installation guides and basic configuration examples." /%}
+
+{% quick-link title="Project Structure" icon="presets" href="/docs/project-structure" description="Understand the organisation of files, folders, and key components in your project." /%}
+
+{% quick-link title="CLI" icon="plugins" href="/docs/cli" description="Learn about command-line tools and utilities for building, testing, and managing your project." /%}
+
+{% quick-link title="Framework Reference" icon="theming" href="/docs/http-request" description="Complete API documentation and reference guide for all framework features and components." /%}
+
+{% /quick-links %}
+
 The Serverless TypeScript framework. {% .lead %}
 
 `tsc` usually compiles your code. Ours compiles your entire backend.

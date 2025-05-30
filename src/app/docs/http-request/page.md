@@ -90,7 +90,7 @@ Returns a specific request header value (case-insensitive):
 
 ```typescript
 export async function POST(request: http.Request) {
-    const authHeader = await request.header('Authorization');
+    const authHeader = request.header('Authorization');
 }
 ```
 
