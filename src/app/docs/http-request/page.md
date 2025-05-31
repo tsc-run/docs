@@ -82,10 +82,6 @@ export async function POST(request: http.Request) {
 
 ### header(name: string)
 
-{% callout type="note" title="New" %}
-Upcoming in 0.4.0-alpha.1.
-{% /callout %}
-
 Returns a specific request header value (case-insensitive):
 
 ```typescript

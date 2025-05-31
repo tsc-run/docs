@@ -2,21 +2,22 @@ import { Fragment } from 'react'
 import Image from 'next/image'
 import clsx from 'clsx'
 import { Highlight } from 'prism-react-renderer'
-
 import { Button } from '@/components/Button'
 import { HeroBackground } from '@/components/HeroBackground'
 import blurCyanImage from '@/images/blur-cyan.png'
 import blurIndigoImage from '@/images/blur-indigo.png'
-import { AIOrb } from '@/components/Orb'
 
 const codeLanguage = 'javascript'
-const code = `export default {
-    provider: 'aws',
-    region: 'eu-west-2',
-};`
+const code = `import {http} from "@tsc-run/core";
+
+export async function GET(request: http.Request) {
+    return http.response(http.STATUS_OK).json({
+        data: [],
+    });
+}`
 
 const tabs = [
-  { name: 'tsc-run.config.js', isActive: true },
+  { name: 'functions/api/users/index.ts', isActive: true },
   // { name: 'package.json', isActive: false },
 ]
 
