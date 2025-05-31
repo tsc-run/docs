@@ -13,19 +13,17 @@ tsc.run uses a configuration file to define your application settings. Create a 
 
 ```typescript
 // tsc-run.config.ts
-export default {
+import { defineConfig } from '@tsc-run/core';
+
+export default defineConfig({
     projectName: 'my-app',
-    provider: 'aws' as const,
+    provider: 'aws',
     region: 'us-east-1',
     environment: 'dev',
-};
+});
 ```
 
 ## Configuration options
-
-{% callout type="note" title="New" %}
-`build` available from 0.4.0-alpha.1.
-{% /callout %}
 
 | Option        | Type     | Required | Default | Description                             |
 |---------------|----------|----------|---------|-----------------------------------------|
@@ -37,13 +35,74 @@ export default {
 | `networking`  | `object` | No       | -       | Network configuration for NAT gateways  |
 | `events`      | `object` | No       | -       | Event configuration for subscribers     |
 | `build`       | `object` | No       | -       | Build configuration for the application |
+| `secrets`     | `object` | No       | -       | Secrets configuration for environment variables |
+
+## Secrets configuration
+
+{% callout type="note" title="New" %}
+`secrets` available from 0.4.0-alpha.2.
+{% /callout %}
+
+Configure secrets and environment variables for your application:
+
+```typescript
+import { defineConfig, fromEnv } from '@tsc-run/core';
+
+export default defineConfig({
+    projectName: 'my-app',
+    provider: 'aws',
+    region: 'us-east-1',
+    secrets: {
+        databaseHost: {
+            value: fromEnv("DATABASE_HOST", "localhost"),
+            description: "Database host URL"
+        },
+        databaseUser: {
+            value: fromEnv("DATABASE_USER", "pulse"),
+            description: "Database username"
+        },
+        databasePassword: {
+            value: fromEnv("DATABASE_PASSWORD", "password"),
+            description: "Database password"
+        },
+        apiKey: {
+            value: "literal-api-key-value"
+        }
+    }
+});
+```
+
+### Secrets configuration options
+
+| Option                | Type                | Description                                      |
+|-----------------------|---------------------|--------------------------------------------------|
+| `secrets`             | `Record<string, SecretConfig>` | Map of secret names to their configuration |
+| `secrets[name].value` | `string \| function` | Secret value (literal string or fromEnv helper) |
+| `secrets[name].description` | `string` | Optional description of the secret |
+
+### Using the fromEnv helper
+
+The `fromEnv` helper allows you to read values from environment variables with fallback defaults:
+
+```typescript
+import { fromEnv } from '@tsc-run/core';
+
+// Read from env variable with fallback
+fromEnv("DATABASE_HOST", "localhost")
+
+// Read from env variable with no fallback (will throw if not set)
+fromEnv("API_KEY")
+```
 
 ## Event configuration
 
 Configure event handling and subscribers:
 
 ```typescript
-export default {
+import { defineConfig } from '@tsc-run/core';
+
+export default defineConfig({
+    projectName: 'my-app',
     provider: 'aws',
     region: 'us-east-1',
     events: {
@@ -60,7 +119,7 @@ export default {
             }
         }
     }
-};
+});
 ```
 
 ### Event configuration options
@@ -76,7 +135,9 @@ export default {
 Configure custom domains for your application:
 
 ```typescript
-export default {
+import { defineConfig } from '@tsc-run/core';
+
+export default defineConfig({
     projectName: 'my-app',
     provider: 'aws',
     region: 'us-east-1',
@@ -87,7 +148,7 @@ export default {
             create: true // or { arn: 'arn:aws:acm:us-east-1:123456789012:certificate/...' }
         }
     }
-};
+});
 ```
 
 ### Domain configuration options
@@ -105,14 +166,16 @@ export default {
 Configure NAT gateways for outbound internet access:
 
 ```typescript
-export default {
+import { defineConfig } from '@tsc-run/core';
+
+export default defineConfig({
     projectName: 'my-app',
     provider: 'aws',
     region: 'us-east-1',
     networking: {
         natGateways: 1 // 0-3
     }
-};
+});
 ```
 
 ### Networking configuration options
@@ -132,7 +195,9 @@ export default {
 Configure build settings for your application:
 
 ```typescript
-export default {
+import { defineConfig } from '@tsc-run/core';
+
+export default defineConfig({
     projectName: 'my-app',
     provider: 'aws',
     region: 'us-east-1',
@@ -141,7 +206,7 @@ export default {
             'mysql2'
         ]
     }
-};
+});
 ```
 
 ### Build configuration options
@@ -156,11 +221,28 @@ Here's a comprehensive configuration example with all available options:
 
 ```typescript
 // tsc-run.config.ts
-export default {
+import { defineConfig, fromEnv } from '@tsc-run/core';
+
+export default defineConfig({
     projectName: 'my-production-app',
-    provider: 'aws' as const,
+    provider: 'aws',
     region: 'us-east-1',
     environment: 'production',
+
+    secrets: {
+        databaseUrl: {
+            value: fromEnv("DATABASE_URL"),
+            description: "Production database connection string"
+        },
+        jwtSecret: {
+            value: fromEnv("JWT_SECRET"),
+            description: "JWT signing secret"
+        },
+        apiKey: {
+            value: fromEnv("EXTERNAL_API_KEY"),
+            description: "Third-party API key"
+        }
+    },
 
     domain: {
         name: 'api.example.com',
@@ -185,7 +267,11 @@ export default {
             }
         }
     },
-};
+
+    build: {
+        exclude: ['mysql2', 'pg-native']
+    }
+});
 ```
 
 ## Next steps

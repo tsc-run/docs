@@ -16,6 +16,10 @@ title: What is tsc.run?
 
 The Serverless TypeScript framework. {% .lead %}
 
+{% callout type="note" title="Latest Version" %}
+Current version: **0.4.0-alpha.2** — [View on npm](https://www.npmjs.com/package/@tsc-run/cli)
+{% /callout %}
+
 `tsc` usually compiles your code. Ours compiles your entire backend.
 
 **tsc.run** (TypeScript Cloud) helps you build, organise, and deploy serverless apps with conventions and a standard
